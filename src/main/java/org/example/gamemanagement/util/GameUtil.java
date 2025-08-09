@@ -6,6 +6,7 @@ import org.example.gamemanagement.dto.GameResponseDTO;
 import org.example.gamemanagement.entities.Game;
 import org.example.gamemanagement.entities.GameName;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class GameUtil {
@@ -30,15 +31,21 @@ public class GameUtil {
                 .defaultLanguage(dto.getDefaultLanguage())
                 .build();
 
-        dto.getName().forEach(nameDTO -> {
-            GameName gameName = GameName.builder()
-                    .language(nameDTO.getLanguage())
-                    .value(nameDTO.getValue())
-                    .game(game)
-                    .build();
-            game.getNames().add(gameName);
-        });
+        // Convert DTO list to entity list
+        List<GameName> gameNames = dto.getName().stream()
+                .map(nameDTO -> GameName.builder()
+                        .language(nameDTO.getLanguage())
+                        .value(nameDTO.getValue())
+                        .game(game) // link back to parent
+                        .build())
+                .collect(Collectors.toList());
+
+        game.setNames(gameNames);
 
         return game;
+
+
+
+
     }
 }

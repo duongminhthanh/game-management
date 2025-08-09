@@ -51,9 +51,6 @@ public class GameServiceImpl implements GameService {
         Game existingGame = gameRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Game not found: " + id));
 
-        // Clear old names
-        existingGame.getNames().clear();
-
         // Update main fields
         existingGame.setCategory(dto.getCategory());
         existingGame.setDefaultLanguage(dto.getDefaultLanguage());
@@ -63,6 +60,7 @@ public class GameServiceImpl implements GameService {
             GameName gn = GameName.builder()
                     .language(nameDTO.getLanguage())
                     .value(nameDTO.getValue())
+                    .game(existingGame)
                     .build();
             existingGame.getNames().add(gn);
         });
